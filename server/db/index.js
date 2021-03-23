@@ -16,7 +16,6 @@ let database = null;
 const getDB = module.exports.getDB = async () => {
   try {
     if (database) {
-      console.log('💽  Already Connected');
       return database;
     }
 
@@ -41,16 +40,14 @@ module.exports.insert = async products => {
   try {
     const db = await getDB();
     const collection = db.collection(MONGODB_COLLECTION);
-    // More details
-    // https://docs.mongodb.com/manual/reference/method/db.collection.insertMany/#insert-several-document-specifying-an-id-field
-    const result = await collection.insertMany(products, {'ordered': false});
+    const result = await collection.insertMany(products);
 
     return result;
   } catch (error) {
     console.error('🚨 collection.insertMany...', error);
     fs.writeFileSync('products.json', JSON.stringify(products));
     return {
-      'insertedCount': error.result.nInserted
+      'insertedCount': 0
     };
   }
 };
